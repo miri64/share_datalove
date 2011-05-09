@@ -1,0 +1,6 @@
+settings.py
+database.db
+*.pyc
+*.mo
+assets/*
+
