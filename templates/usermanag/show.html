@@ -29,7 +29,7 @@ THE SOFTWARE.
     <p>City: {{viewuser.profile.adress.zipcode}}, {{viewuser.profile.adress.city}}</p>
     <p>Street: {{viewuser.profile.adress.street}}, {{viewuser.profile.adress.housenumber}}</p>
 
-{% if viewuser == user %}<p>Note: Your adress is only visible to you. If you want to change this, activate the "Publuc Adress" Field in your profile</p>{% endif %}
+{% if viewuser == user %}<p>Note: Your adress is only visible to you. If you want to change this, activate the "Public Adress" Field in your profile</p>{% endif %}
 {% endif %}
 <h3>Objects:</h3>
 {% if objects|length_is:"0"%}

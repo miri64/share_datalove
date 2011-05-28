@@ -160,3 +160,9 @@ hr {
     vertical-align:top;
     margin:0px;
 }
+
+#map {
+          width: 75%;
+          height: 400px;
+          margin: 0;
+      }

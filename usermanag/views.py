@@ -87,10 +87,13 @@ def register(request):
                     message = "Error: The Username is already taken"
                     context = util.generateContext(request, contextType = 'RequestContext', form=form, message=message)
                     return HttpResponseServerError(t.render(context))
-                up = UserProfile(user=user)
-                user.profile = up
-                up.url = username
-                up.save()
+                #user.profile = UserProfile(user=user)
+                user.profile.save()
+                profile = user.get_profile()
+                profile.url = username
+                print profile.url
+                print username
+                profile.save()
                 user = authenticate(username=username, password=password)
                 login(request, user)
                 return redirect('/')
@@ -114,6 +117,7 @@ def showUser(request, url=None):
             return redirect('/')
     else:
         user = get_object_or_404(User, username=url)
+    print request.user.profile.url
     objectlist = Object.objects.all().filter(sender=user)
     context = util.generateContext(request, contextType = 'RequestContext', viewuser=user, objects=objectlist, title=user.username)
     return render_to_response('usermanag/show.html', context)
@@ -138,7 +142,7 @@ def editProfile(request):
             street = adressform.cleaned_data['street']
             housenumber = adressform.cleaned_data['housenumber']
             userprofile = request.user.profile
-            l = Location(country=country, city=city, zipcode=zipcode, street=street, housenumber=housenumber, title=title)
+            l = Location(country=country, city=city, zipcode=zipcode, street=street, housenumber=housenumber)
             l.save()
             userprofile.adress = l
             userprofile.publicAdress = publicadress

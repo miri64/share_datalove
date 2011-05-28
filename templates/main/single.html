@@ -20,6 +20,58 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 {% endcomment %}
 
+{% block head %}
+<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+<script type="text/javascript" src="{{STATIC_PREFIX}}js/map.js"></script>
+ 
+<script type="text/javascript">
+//<![CDATA[
+
+var map;
+var layer_mapnik;
+var layer_tah;
+var layer_markers;
+
+function drawmap() {
+    if ("{{object.destination.longitude}}" == "") {
+        document.getElementById('mapinfo').innerHTML = "This object hasn't got any Geocoordinates. The Location possibly isn't valid";
+    } else {
+        document.getElementById('mapinfo').innerHTML = "";
+        // Popup und Popuptext mit evtl. Grafik
+        var popuptext="<font color=\"black\">Current owner: {{object.lastuser}}<br>{{object.getstreet}}<br>{{object.getcity}}</font>";
+
+        OpenLayers.Lang.setCode('de');
+        
+        // Position und Zoomstufe der Karte
+        var lon = {{object.getlon}};
+        var lat = {{object.getlat}};
+        var zoom = 15;
+
+        map = new OpenLayers.Map('map', {
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            displayProjection: new OpenLayers.Projection("EPSG:4326"),
+            units: 'meters'
+        });
+
+        layer_mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+        layer_markers = new OpenLayers.Layer.Markers("Address", { projection: new OpenLayers.Projection("EPSG:4326"), 
+                                                      visibility: true, displayInLayerSwitcher: false });
+
+        map.addLayers([layer_mapnik, layer_markers]);
+        jumpTo(lon, lat, zoom);
+     
+        // Position des Markers
+        addMarker(layer_markers, lon, lat, popuptext);
+    }
+}
+
+//]]>
+    </script>
+{% endblock %}
+
+{% block body %} onload="drawmap();"{% endblock %}
+
 {% block content %}
 
 <h1>{{object.name}}</h1>
@@ -38,5 +90,6 @@ THE SOFTWARE.
 <a href="/newhop/?obj={{object.id}}">Add a hop</a>
 
 <h3>Current location</h3>
-to be done
+  <div id="map"><p id="mapinfo">Please enable Javascript to see the map</p></div>
+
 {% endblock %}

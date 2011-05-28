@@ -32,8 +32,9 @@ THE SOFTWARE.
 					{% if flatpage.title %}{{ flatpage.title }}{% endif %}
 					&raquo;
 				{% endif %} Share Datalove</title>
+{% block head %}{% endblock %}
 </head>
-<body>
+<body{% block body %}{% endblock %}>
 <div class="menu">
 <a href="index.html">Principles</a>
 </div>

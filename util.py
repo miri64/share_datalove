@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import urllib2
+from xml.dom import minidom
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import Context, loader
 from django.core.mail import send_mail
@@ -34,3 +36,31 @@ def generateContext(request, contextType = 'Context', **kwargs):
 		pass
 
 	return context
+
+def getLonLat(country=None, city=None, zipcode=None, street=None, housenumber=None):
+    url = u"http://nominatim.openstreetmap.org/search?q="
+    print type(housenumber)
+    print housenumber
+    if housenumber != "":
+        url += housenumber
+    if street != "":
+        url += u",+{0}".format(street)
+    if city != "":
+        url += u",+{0}".format(city)
+    if country != "":
+        url += u",+{0}".format(country)
+    url += u"&format=xml"
+    xml = urllib2.urlopen(url.encode("ascii", "ignore"))
+    xml = xml.read()
+    print xml
+    dom = minidom.parseString(xml)
+    result = dom.getElementsByTagName("searchresults")[0]
+    print result.getElementsByTagName("place")
+    if result.getElementsByTagName("place") != []:
+        place = result.getElementsByTagName("place")[0]
+        longitude = place.getAttribute("lon")
+        latitude = place.getAttribute("lat")
+        return longitude, latitude
+    else:
+        return "", ""
+    
